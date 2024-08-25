@@ -49,7 +49,7 @@ higherHigh, lowerHigh, higherLow e lowerLow: condizioni booleane per verificare 
 Tracciamento: se abilitate, queste condizioni vengono tracciate sul grafico con le etichette [HH], [LH], [HL] e [LL].
 
 10. Frattali da un intervallo di tempo più alto
-Consente all'utente di mostrare i frattali da un intervallo di tempo più alto.
+Consente di mostrare i frattali da un intervallo di tempo più alto.
 isTFFractal(mode, tf): verifica se il frattale nell'intervallo di tempo corrente corrisponde a uno da un intervallo di tempo più alto.
 higherHighTF e lowerLowTF: utilizzati per identificare e tracciare massimi più alti e minimi più bassi dall'intervallo di tempo più alto. 11. Traccia canali in base ai frattali
 showChannel1 e showChannel2: opzioni per tracciare canali in base ai frattali.
