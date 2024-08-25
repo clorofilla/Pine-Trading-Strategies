@@ -55,7 +55,8 @@ higherHighTF e lowerLowTF: utilizzati per identificare e tracciare massimi più 
 showChannel1 e showChannel2: opzioni per tracciare canali in base ai frattali.
 Canale 1: utilizza frattali superiori e inferiori per tracciare.
 Canale 2: utilizza massimi più alti e minimi più bassi per tracciare.
-Riepilogo
+
+
 Questo script automatizza le decisioni di trading in base a modelli frattali e regole di gestione del rischio. Offre flessibilità tramite input utente per mostrare modelli frattali, massimi/minimi più alti e canali sul grafico. La strategia inserisce ordini di acquisto/vendita quando si verificano modelli frattali specifici e gestisce il rischio con ordini stop-loss e take-profit.
 
 Scenario:
