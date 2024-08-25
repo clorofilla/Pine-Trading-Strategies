@@ -1,0 +1,108 @@
+//@version=5
+strategy('Fractals Strategy', overlay=true, default_qty_type=strategy.percent_of_equity, default_qty_value=10)
+
+// Input options
+showPatterns = input(false, title='Show Patterns')
+showBarColors = input(false, title='Show Bar Colors')
+filterBW = input(false, title='Filter Bill Williams Fractals')
+
+// Risk management inputs
+stopLossPercent = input(2.0, title='Stop Loss Percentage') / 100
+takeProfitPercent = input(4.0, title='Take Profit Percentage') / 100
+
+// Fractal Recognition Constants
+UP = 1
+DOWN = -1
+
+// Fractal Recognition Functions
+isRegularFractal(mode) =>
+    if mode == UP
+        high[4] < high[3] and high[3] < high[2] and high[2] > high[1] and high[1] > high[0]
+    else
+        if mode == DOWN
+            low[4] > low[3] and low[3] > low[2] and low[2] < low[1] and low[1] < low[0]
+        else
+            false
+
+isBWFractal(mode) =>
+    if mode == UP
+        high[4] < high[2] and high[3] <= high[2] and high[2] >= high[1] and high[2] > high[0]
+    else
+        if mode == DOWN
+            low[4] > low[2] and low[3] >= low[2] and low[2] <= low[1] and low[2] < low[0]
+        else
+            false
+
+// Apply filter based on user input
+filteredTopFractal = filterBW ? isRegularFractal(UP) : isBWFractal(UP)
+filteredBottomFractal = filterBW ? isRegularFractal(DOWN) : isBWFractal(DOWN)
+
+// Plot fractals
+plotshape(series=filteredTopFractal, title='Filtered Top Fractals', style=shape.triangledown, location=location.abovebar, color=color.new(color.red, 0), offset=-2)
+plotshape(series=filteredBottomFractal, title='Filtered Bottom Fractals', style=shape.triangleup, location=location.belowbar, color=color.new(color.lime, 0), offset=-2)
+
+// Automated Trading Logic
+var float topFractalPrice = na
+var float bottomFractalPrice = na
+
+if filteredBottomFractal
+    bottomFractalPrice := low
+    bottomFractalPrice
+
+if filteredTopFractal
+    topFractalPrice := high
+    topFractalPrice
+
+if not na(topFractalPrice) and not na(bottomFractalPrice)
+    strategy.entry('Buy', strategy.long, stop=low, limit=low * (1 - stopLossPercent), oca_name='BuyOrder', oca_type=strategy.oca.cancel)
+    strategy.exit('Take Profit/Stop Loss', from_entry='Buy', limit=low * (1 + takeProfitPercent), stop=low * (1 - stopLossPercent))
+
+    strategy.entry('Sell', strategy.short, stop=high, limit=high * (1 + stopLossPercent), oca_name='SellOrder', oca_type=strategy.oca.cancel)
+    strategy.exit('Take Profit/Stop Loss', from_entry='Sell', limit=high * (1 - takeProfitPercent), stop=high * (1 + stopLossPercent))
+
+// Higher Highs, Lower Highs, Higher Lows, Lower Lows
+showHHLL = input(false, title='Show Higher Highs/Lower Highs/Higher Lows/Lower Lows')
+
+higherHigh = filteredTopFractal and ta.valuewhen(filteredTopFractal, high[2], 1) < high[2] and ta.valuewhen(filteredTopFractal, high[2], 2) < high[2]
+lowerHigh = filteredTopFractal and ta.valuewhen(filteredTopFractal, high[2], 1) > high[2] and ta.valuewhen(filteredTopFractal, high[2], 2) > high[2]
+higherLow = filteredBottomFractal and ta.valuewhen(filteredBottomFractal, low[2], 1) < low[2] and ta.valuewhen(filteredBottomFractal, low[2], 2) < low[2]
+lowerLow = filteredBottomFractal and ta.valuewhen(filteredBottomFractal, low[2], 1) > low[2] and ta.valuewhen(filteredBottomFractal, low[2], 2) > low[2]
+
+// Plot higher highs, lower highs, higher lows, lower lows
+plotshape(series=showHHLL ? higherHigh : na, title='Higher High', style=shape.square, location=location.abovebar, color=color.new(color.maroon, 0), text='[HH]', offset=-2)
+plotshape(series=showHHLL ? lowerHigh : na, title='Lower High', style=shape.square, location=location.abovebar, color=color.new(color.maroon, 0), text='[LH]', offset=-2)
+plotshape(series=showHHLL ? higherLow : na, title='Higher Low', style=shape.square, location=location.belowbar, color=color.new(color.green, 0), text='[HL]', offset=-2)
+plotshape(series=showHHLL ? lowerLow : na, title='Lower Low', style=shape.square, location=location.belowbar, color=color.new(color.green, 0), text='[LL]', offset=-2)
+
+// Fractals from higher timeframe
+showTimeFractals1 = input(false, title='Show Fractals from Higher Timeframe')
+timeframe1 = input('240', title='Higher Timeframe')
+
+isTFFractal(mode, tf) =>
+    topPrice = request.security(syminfo.tickerid + ':' + tf, timeframe.period, high)
+    bottomPrice = request.security(syminfo.tickerid + ':' + tf, timeframe.period, low)
+    if mode == UP
+        ta.valuewhen(filteredTopFractal, topFractalPrice, 0) >= topPrice
+    else
+        if mode == DOWN
+            ta.valuewhen(filteredBottomFractal, bottomFractalPrice, 0) <= bottomPrice
+        else
+            false
+
+higherHighTF = higherHigh and isTFFractal(UP, timeframe1)
+lowerLowTF = lowerLow and isTFFractal(DOWN, timeframe1)
+
+// Plot fractals from higher timeframe
+plotshape(series=showTimeFractals1 ? higherHighTF : na, title='Timed Top Fractals', style=shape.square, location=location.abovebar, color=color.new(color.maroon, 0), text='[TH]', offset=-2)
+plotshape(series=showTimeFractals1 ? lowerLowTF : na, title='Timed Bottom Fractals', style=shape.square, location=location.belowbar, color=color.new(color.green, 0), text='[TL]', offset=-2)
+
+// Plot channels based on fractals
+showChannel1 = input(false, title='Show Channel 1')
+plot(not showChannel1 ? na : filteredTopFractal ? high[2] : na, title='Top Channel 1', color=color.new(color.black, 0), offset=-2)
+plot(not showChannel1 ? na : filteredBottomFractal ? low[2] : na, title='Bottom Channel 1', color=color.new(color.black, 0), offset=-2)
+
+showChannel2 = input(false, title='Show Channel 2')
+plot(not showChannel2 ? na : higherHigh ? high[2] : na, title='Top Channel 2', color=color.new(color.gray, 0), offset=-2)
+plot(not showChannel2 ? na : lowerLow ? low[2] : na, title='Bottom Channel 2', color=color.new(color.gray, 0), offset=-2)
+
+//strategy.close(id, when, comment, qty, qty_percent, alert_message)

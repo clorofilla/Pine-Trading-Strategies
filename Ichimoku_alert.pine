@@ -1,0 +1,67 @@
+// This source code is subject to the terms of the Mozilla Public License 2.0 at https://mozilla.org/MPL/2.0/
+// © Gorillaclorofilla
+
+//@version=4
+study(title="Ichimoku Cloud - Alerts", shorttitle="Ichimoku - Alerts", overlay=true, resolution="")
+
+conversionPeriods = input(9, minval=1, title="Conversion Line Periods"),
+basePeriods = input(26, minval=1, title="Base Line Periods")
+laggingSpan2Periods = input(52, minval=1, title="Lagging Span 2 Periods"),
+displacement = input(26, minval=1, title="Displacement")
+
+donchian(len) => avg(lowest(len), highest(len))
+
+conversionLine = donchian(conversionPeriods)
+baseLine = donchian(basePeriods)
+spanA = avg(conversionLine, baseLine)
+spanB = donchian(laggingSpan2Periods)
+
+plot(conversionLine, color=#0496ff, title="Conversion Line")
+plot(baseLine, color=#991515, title="Base Line")
+plot(close, offset = -displacement + 1, color=#459915, title="Lagging Span")
+
+p1 = plot(spanA, offset = displacement - 1, color=color.green, title="Span A")
+p2 = plot(spanB, offset = displacement - 1, color=color.red, title="Span B")
+fill(p1, p2, color = spanA > spanB ? color.green : color.red)
+plot(spanA[25], color=color.orange)
+plot(spanB[25], color=color.yellow)
+priceincloud = (close>spanA[25] and close<spanB[25]) or (close<spanA[25] and close>spanB[25])
+//TRADING RULES
+//Conversion Line and Baseline crossover with Laggin Span Filter
+ConvBaseBuy = crossover(conversionLine, baseLine)
+ConvBaseSell = crossunder(conversionLine, baseLine)
+//Laggin Span Filter
+// cblagBuy = ConvBaseBuy==true and (close > high[25])
+// cblagSell = ConvBaseSell == true and (close < low[25])
+//test plot for cb filter
+// plotshape(series=cblagBuy, text = "LS Buy", title="Lagging Span Buy", location=location.belowbar, style=shape.triangleup, color=color.lime, size=size.small)
+// plotshape(series=cblagSell, text="LS Sell", title="Laggin Span Sell", location=location.abovebar, style=shape.triangledown, color=color.red, size=size.small)
+
+//Conversion Line and Baseline crossover with Kumo Cloud Filter
+//Kumo Cloud Rule
+idealbuy = (close>high[25]) and conversionLine>baseLine and (close>spanA[25] and close>spanB[25]) and (low>spanA[25] and low>spanB[25])
+idealsell = (close<low[25]) and conversionLine<baseLine and (close<spanB[25] and close<spanB[25]) and (high<spanA[25] and high<spanB[25])
+
+buymem = false
+sellmem = false
+
+buymem := idealbuy?true:idealsell?false:buymem[1]
+sellmem := idealsell?true:idealbuy?false:sellmem[1]
+
+longCond = idealbuy and not(buymem[1])
+shortCond = idealsell and not(sellmem[1])
+
+plotshape(series=longCond, text = "Ichi Buy", title="Ichi Buy", location=location.belowbar, style=shape.triangleup, color=color.lime, size=size.small)
+plotshape(series=shortCond, text="Ichi Sell", title="Ichi Sell", location=location.abovebar, style=shape.triangledown, color=color.red, size=size.small)
+
+//Cloud Rule
+buycloud = crossover(spanA, spanB) and (low>spanA[25] and low>spanB[25])
+sellcloud = crossunder(spanA, spanB) and (high<spanA[25] and high<spanB[25])
+
+plotshape(series=buycloud, text = "Cloud Buy", title="Cloud Buy", location=location.belowbar, style=shape.triangleup, color=color.lime, size=size.small)
+plotshape(series=sellcloud, text="Cloud Sell", title="Cloud Sell", location=location.abovebar, style=shape.triangledown, color=color.red, size=size.small)
+
+alertcondition(longCond, title="Ichi Buy", message="Buy it like a snail")
+alertcondition(shortCond, title="Icchi Sell", message="Sell it like a snail")
+alertcondition(buycloud, title="Cloud Buy", message="I'm Goku")
+alertcondition(sellcloud, title="Cloud Sell", message="Bulma took a ride and is now Falling")
