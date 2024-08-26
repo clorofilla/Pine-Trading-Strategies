@@ -37,9 +37,12 @@ Final Buy (longCond): innesca un segnale di acquisto quando si verifica una cond
 
 Final Sell (shortCond): innesca un segnale di vendita quando si verifica una condizione di vendita ideale e non c'era un segnale di vendita sulla barra precedente.
 
+
 Cloud Crossover:
 
-buycloud: un crossover di Span A sopra Span B, con condizioni aggiuntive sul prezzo, che indica un segnale di acquisto. sellcloud: un crossunder di Span A sotto Span B, con condizioni aggiuntive sul prezzo, che indica un segnale di vendita.
+buycloud: un crossover di Span A sopra Span B, con condizioni aggiuntive sul prezzo, che indica un segnale di acquisto. 
+
+sellcloud: un crossunder di Span A sotto Span B, con condizioni aggiuntive sul prezzo, che indica un segnale di vendita.
 
 6. Avvisi:
 Lo script crea avvisi per le varie condizioni di acquisto e vendita, con messaggi personalizzati.
