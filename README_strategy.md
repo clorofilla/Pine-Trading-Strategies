@@ -63,6 +63,7 @@ Lo script dunque automatizza le decisioni di trading in base a modelli frattali 
 Scenario:
 Abbiamo abilitato filterBW, quindi lo script utilizzerà la definizione frattale di Bill Williams.
 Lo stop loss è impostato al 2% e il take profit è impostato al 4%. Stiamo anche visualizzando i massimi più alti/massimi più bassi e i minimi più alti/minimi più bassi.
+
 Contesto di mercato:
 Movimento recente dei prezzi:
 
@@ -110,7 +111,7 @@ Ordine di vendita: piazzato a $ 102 con stop loss a $ 104,04 e take profit a $ 9
 Risultati:
 Se il prezzo scende a $ 97, viene attivato un ordine di acquisto. Se il prezzo sale a $ 100,88, la posizione viene chiusa con profitto. Se scende a $ 95,06, la posizione viene chiusa con perdita.
 Se il prezzo sale a $ 102, viene attivato un ordine di vendita. Se il prezzo scende a $ 97,92, la posizione viene chiusa con profitto. Se sale a $ 104,04, la posizione viene chiusa con perdita.
-Ecco come funzionerebbe il codice Pine Script fornito in uno scenario di trading reale, in base al rilevamento frattale e ai parametri della strategia configurati.
+Ecco come funzionerebbe il codice Pine Script in uno scenario di trading reale, in base al rilevamento frattale e ai parametri della strategia configurati.
 
 
 high[0]: si riferisce al prezzo alto della barra corrente (la barra più recente sul grafico).
@@ -118,6 +119,7 @@ high[1]: si riferisce al prezzo alto della barra precedente, che è la barra pri
 high[2]: si riferisce al prezzo alto della barra prima di quella a cui fa riferimento high[1], quindi due barre fa.
 high[3]: si riferisce al prezzo alto della barra tre barre fa.
 high[4]: si riferisce al prezzo alto della barra quattro barre fa. Esempio in una sequenza:
+
 Supponiamo di guardare un grafico di 1 ora con i seguenti prezzi massimi per le ultime cinque barre:
 
 Indice barra Ora Prezzo massimo
