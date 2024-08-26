@@ -28,10 +28,15 @@ ConvBaseBuy: un incrocio della Conversion Line sopra la Base Line, che indica un
 Kumo Cloud Rule:
 
 Ideal Buy (idealbuy): un set di condizioni in cui il prezzo è sopra la cloud e la Conversion Line è sopra la Base Line, che indica un forte segnale di acquisto.
+
 Ideal Sell (idealsell): un set di condizioni in cui il prezzo è sotto la cloud e la Conversion Line è sotto la Base Line, che indica un forte segnale di vendita.
+
 Memory (buymem e sellmem): variabili booleane che ricordano il precedente segnale di acquisto o vendita per evitare segnali ripetuti.
+
 Final Buy (longCond): innesca un segnale di acquisto quando si verifica una condizione di acquisto ideale e non c'era un segnale di acquisto sulla barra precedente.
+
 Final Sell (shortCond): innesca un segnale di vendita quando si verifica una condizione di vendita ideale e non c'era un segnale di vendita sulla barra precedente.
+
 Cloud Crossover:
 
 buycloud: un crossover di Span A sopra Span B, con condizioni aggiuntive sul prezzo, che indica un segnale di acquisto. sellcloud: un crossunder di Span A sotto Span B, con condizioni aggiuntive sul prezzo, che indica un segnale di vendita.
