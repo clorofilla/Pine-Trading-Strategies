@@ -3,6 +3,7 @@ Codice Spiegazione/Esempi
 Questo script è una strategia in Pine per TradingView che utilizza i frattali per prendere decisioni di trading. 
 
 1. Informazioni sullo script
+
 Lo script utilizza Pine Script versione 5
 
 Definisce una strategia chiamata "Fractal strategy", che è sovrapposta al grafico. La dimensione predefinita della transazione è impostata al 10% del capitale.
