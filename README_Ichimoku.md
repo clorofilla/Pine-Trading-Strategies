@@ -79,6 +79,8 @@ Conclusione:
 La strategia avvisa i trader di potenziali opportunità di acquisto/vendita in base ai principi di Ichimoku Cloud e ai filtri personalizzati, consentendo loro di prendere decisioni informate.
 Questa configurazione consente un'analisi completa delle tendenze di mercato utilizzando Ichimoku Cloud, aiutando a identificare potenziali punti con avvisi.
 
+
+
 Copyright (c) the respective contributors, as shown by the AUTHORS file.
 
 This program is free software: you can redistribute it and/or modify
